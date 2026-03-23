@@ -146,9 +146,12 @@ export async function executeProjectCodeController(req, res) {
     );
 
     return res.status(200).json({
-      success: true,
-      data: response.data.run.output,
-    });
+  success: true,
+  data: {
+    stdout: response.data.run.output || "",
+    stderr: response.data.run.stderr || "",
+  },
+});
 
   } catch (error) {
     console.error(error);

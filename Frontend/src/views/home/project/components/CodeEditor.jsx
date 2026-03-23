@@ -248,13 +248,14 @@ console.log("Even:", even);`,
       notify({ message: 'Project is not ready yet', type: 'error' });
       return;
     }
-    if (execLanguage !== 'javascript') {
-      notify({
-        message: 'Execution is available only for JavaScript. Use AI Review for other languages.',
-        type: 'warning',
-      });
-      return;
-    }
+    // if (execLanguage !== 'javascript') {
+    //   notify({
+    //     message: 'Execution is available only for JavaScript. Use AI Review for other languages.',
+    //     type: 'warning',
+    //   });
+    //   return;
+    // }
+    
 
     if (!latestCode.trim()) {
       notify({ message: 'Please write some code first!', type: 'warning' });
