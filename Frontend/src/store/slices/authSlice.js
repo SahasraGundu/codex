@@ -13,7 +13,7 @@ export const loginUser = createAsyncThunk(
         return rejectWithValue(response.data?.message || 'Login failed');
       }
 
-      localStorage.setItem('codex_token', response.data.token);
+      localStorage.setItem('token', response.data.token);
       localStorage.setItem('codex_team', response.data.user.teamName);
       localStorage.setItem('codex_username', response.data.user.username);
       return response.data;
@@ -39,7 +39,7 @@ export const registerUser = createAsyncThunk(
 );
 
 const getInitialAuthState = () => {
-  const token = localStorage.getItem('codex_token');
+  const token = localStorage.getItem('token');
   if (!token)
     return { user: { username: null, teamName: null }, token: null, isAuthenticated: false };
 
