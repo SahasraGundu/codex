@@ -1,11 +1,12 @@
 import {
   createProject,
-  executeLocalJavaScript,
   getAllProjects,
   getProjectById,
   reviewProject,
   updateProject,
 } from '../services/project.service.js';
+import axios from "axios";
+
 
 export async function createProjectController(req, res) {
   try {
@@ -29,7 +30,6 @@ export async function createProjectController(req, res) {
     });
   }
 }
-
 export async function getAllProjectsController(req, res) {
   try {
     const projects = await getAllProjects(req.user.teamName);
@@ -114,26 +114,47 @@ export async function reviewProjectController(req, res) {
 
 export async function executeProjectCodeController(req, res) {
   try {
-    const { id } = req.params;
     const { code, language } = req.body;
 
-    if (language !== 'javascript') {
+    const languageMap = {
+      javascript: { language: "javascript", version: "18.15.0" },
+      python: { language: "python", version: "3.10.0" },
+      java: { language: "java", version: "15.0.2" },
+      cpp: { language: "cpp", version: "10.2.0" }
+    };
+
+    const langConfig = languageMap[language];
+
+    if (!langConfig) {
       return res.status(400).json({
         success: false,
-        message: 'Only JavaScript execution is supported currently',
+        message: "Unsupported language",
       });
     }
 
-    const result = await executeLocalJavaScript(code);
+    const response = await axios.post(
+      "https://emkc.org/api/v2/piston/execute",
+      {
+        language: langConfig.language,
+        version: langConfig.version,
+        files: [
+          {
+            content: code
+          }
+        ]
+      }
+    );
 
     return res.status(200).json({
       success: true,
-      data: result,
+      data: response.data.run.output,
     });
+
   } catch (error) {
+    console.error(error);
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Execution failed",
     });
   }
 }
