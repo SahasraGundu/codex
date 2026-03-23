@@ -16,7 +16,7 @@ const server = http.createServer(app);
 const io = new SocketServer(server, {
   cors: {
     // origin: ['http://localhost:5173', 'https://codex-psi-murex.vercel.app/'],
-    origin: config.FRONTEND_URLS,
+    origin: "*",
     credentials: true,
     methods: ['GET', 'POST'],
   },

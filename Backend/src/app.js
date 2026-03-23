@@ -13,29 +13,16 @@ const app = express();
 app.use(helmet());
 
 // const allowedOrigins = ['http://localhost:5173', 'https://codex-psi-murex.vercel.app/];
-const normalizeOrigin = origin => (origin ? origin.replace(/\/+$/, '') : origin);
-const allowedOrigins = config.FRONTEND_URLS.map(normalizeOrigin);
+// ✅ Simple & working CORS setup
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://codex-iota-mocha.vercel.app"
+  ],
+  credentials: true
+}));
 
-console.log('Allowed Origins:', allowedOrigins);
-
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-
-    const requestOrigin = normalizeOrigin(origin);
-    if (allowedOrigins.includes(requestOrigin)) {
-      return callback(null, true);
-    }
-
-    return callback(new Error('CORS not allowed'));
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-};
-
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+app.options("*", cors());
 
 app.use(morgan('combined'));
 app.use(express.json({ limit: '10mb' }));
